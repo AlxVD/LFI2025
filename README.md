@@ -87,5 +87,5 @@ Suppressed 47141 warnings (47141 in non-user code).
 Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
 ```
 
-Видим только какие-то предупреждения, не обращаем на них внимания. Если есть ошибки стиля вы увидите строки `error`. Их
+Если видим только какие-то предупреждения, то не обращаем на них внимания. Если же есть ошибки стиля - вы увидите строки `error`. Их
 надо будет исправить.
