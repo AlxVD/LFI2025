@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN
-#include "../catch.hpp"
+#include <catch.hpp>
 
 #include "gcd.hpp"
 #include "gcd.hpp"  // check include guards
