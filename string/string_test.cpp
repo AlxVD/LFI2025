@@ -88,7 +88,7 @@ TEST_CASE("Move Constructor", "[String]") {
   {
     auto empty = String();
     const auto copy = std::move(empty);
-    REQUIRE(empty.Size() == 0u);
+    REQUIRE(empty.Size() == 0u);      // NOLINT
     REQUIRE(empty.Capacity() == 0u);
     REQUIRE(empty.Data() == nullptr);
     REQUIRE(copy.Size() == 0u);
@@ -149,6 +149,7 @@ TEST_CASE("Copy Assignment", "[String]") {
     s = s;
     CheckEqual(s, "abacaba");
     CheckEqual(init, "abacaba");
+    REQUIRE(s.Data() != init.Data());
   }
 
   SECTION("Small to large") {
@@ -158,6 +159,8 @@ TEST_CASE("Copy Assignment", "[String]") {
     CheckEqual(large, std::string(10, 'a'));
     CheckEqual(small, std::string(10, 'a'));
     REQUIRE(large.Data() != small.Data());
+    REQUIRE(large.Capacity() == 1000);
+    REQUIRE(large.Size() == 10);
   }
 
   SECTION("Large to small") {
@@ -167,6 +170,20 @@ TEST_CASE("Copy Assignment", "[String]") {
     CheckEqual(large, std::string(1000, 'b'));
     CheckEqual(small, std::string(1000, 'b'));
     REQUIRE(large.Data() != small.Data());
+    REQUIRE(small.Capacity() == 1000);
+    REQUIRE(small.Size() == 1000);
+  }
+
+  SECTION("Large with reserve to small") {
+    auto large = String(1000, 'b');
+    auto small = String(10, 'a');
+    large.Reserve(1200);
+    small = large;
+    CheckEqual(large, std::string(1000, 'b'));
+    CheckEqual(small, std::string(1000, 'b'));
+    REQUIRE(large.Data() != small.Data());
+    REQUIRE(small.Capacity() == 1000);
+    REQUIRE(small.Size() == 1000);
   }
 }
 
@@ -177,7 +194,7 @@ TEST_CASE("Move Assignment", "[String]") {
     auto empty = String();
     auto s = String();
     s = std::move(empty);
-    REQUIRE(empty.Size() == 0u);
+    REQUIRE(empty.Size() == 0u);      // NOLINT
     REQUIRE(empty.Capacity() == 0u);
     REQUIRE(empty.Data() == nullptr);
     REQUIRE(s.Size() == 0u);
@@ -261,15 +278,15 @@ TEST_CASE("Data Access", "[String]") {
   {
     REQUIRE(std::as_const(s).CStr()[3] == 'd');
     REQUIRE(std::as_const(s).Data()[3] == 'd');
-    s.CStr()[3] = 'v';
-    REQUIRE(std::as_const(s).CStr()[3] == 'v');
-    REQUIRE(std::as_const(s).Data()[3] == 'v');
+    //s.CStr()[3] = 'v';
+    //REQUIRE(std::as_const(s).CStr()[3] == 'v');
+    //REQUIRE(std::as_const(s).Data()[3] == 'v');
     s.Data()[3] = 'u';
     REQUIRE(std::as_const(s).CStr()[3] == 'u');
     REQUIRE(std::as_const(s).Data()[3] == 'u');
 
-    static_assert(std::is_same_v<decltype(std::as_const(s).CStr()), const char*>,
-                  "CStr() const must return const pointer");
+    static_assert(std::is_same_v<decltype(s.CStr()), const char*>,
+                  "CStr() must return const pointer");
     static_assert(std::is_same_v<decltype(std::as_const(s).Data()), const char*>,
                   "Data() const must return const pointer");
   }
