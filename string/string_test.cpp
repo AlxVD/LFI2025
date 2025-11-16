@@ -245,6 +245,11 @@ TEST_CASE("Move Assignment", "[String]") {
     REQUIRE(b.Size() == 10u);
     REQUIRE(b.Capacity() == capacity);
     REQUIRE(b.Data() == data);
+
+    b = std::move(b);
+    REQUIRE(b.Size() == 10u);
+    REQUIRE(b.Capacity() == capacity);
+    REQUIRE(b.Data() == data);
   }
 }
 
